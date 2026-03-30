@@ -1,6 +1,13 @@
 import {Post} from '@/lib/type'
 import {use} from 'react'
 
+/***
+ * Oui, et petite nuance importante : use() n’est pas un hook React “classique” 
+ * dans la doc, c’est une API spéciale. 
+ * C’est pour ça qu’elle surprend la première fois. 
+ * React dit aussi quelle peur etre utliser sans  les Server Components
+ */
+
 const fetchPosts = async () => {
   const response = await fetch('http://localhost:3000/exercises/api/posts')
   const data = await response.json()
