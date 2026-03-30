@@ -3,7 +3,7 @@
 
 export async function GET() {
   try {
-    const res = await fetch('https://jsonplaceholder.typicode.co/posts')
+    const res = await fetch('https://jsonplaceholder.typicode.com/posts')
     if (!res.ok) throw new Error('API error')
     const posts = await res.json()
     return Response.json(posts)
