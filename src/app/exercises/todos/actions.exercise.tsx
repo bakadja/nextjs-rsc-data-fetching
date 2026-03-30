@@ -1,6 +1,6 @@
 // 🐶 Ajoute la directive `use server` pour spécifier que nous faisons des server actions
-// 🤖 'use server'
-
+'use server'
+import { updateTag  } from 'next/cache'
 import {addTodo as addTodoDao} from '@/db/sgbd'
 import {AddTodo} from '@/lib/type'
 
@@ -12,6 +12,14 @@ export const addTodo = async (todo: AddTodo) => {
   // et throw l'erreur pour la remonter au client
 
   //🐶 Pense à utiliser cette action dans `todos-view`
+
+  try {
+    await addTodoDao(todo)
+    updateTag ('todos')
+  } catch(err) {
+    console.error("Error adding todo", err)
+    throw err
+  }
 }
 
 //🐶 N'oublie pas les exercices bonus

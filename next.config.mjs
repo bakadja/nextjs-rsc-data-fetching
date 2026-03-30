@@ -19,6 +19,7 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: false,
   },
+  cacheComponents: true
 }
 
 const withMDX = createMDX()
