@@ -8,8 +8,12 @@ const Page = () => {
     const fetchPosts = async () => {
       try {
         // ⛏️ Remplace cette url par l'url de l'api next
-        const response = await fetch('http://localhost:4000/posts')
+        const response = await fetch('/exercises/api/posts')
+        if(!response.ok) throw new Error(`HTTP ${response.status}`)
         const data = await response.json()
+        console.log("data",data)
+        console.log("Array.isArray(data",Array.isArray(data))
+        if(!Array.isArray(data)) throw new Error('Invalid Format')
         setPosts(data as Post[])
       } catch (error) {
         console.error('Error fetching posts:', error)
