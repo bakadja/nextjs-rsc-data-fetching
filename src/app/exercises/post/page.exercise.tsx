@@ -1,13 +1,13 @@
 import type {Post} from '@/lib/type'
-import { use } from 'react'
 
 const fetchPosts = async (): Promise<Post[]> => {
   const response = await fetch('http://localhost:3000/exercises/api/posts')
-  return await response.json()
+  const posts = await response.json()
+  return posts as Post[]
 }
 
-const Page = () => {
-  const posts = use(fetchPosts())
+const Page = async() => {
+  const posts = await fetchPosts()
     console.log('posts', posts)
     
     return (
