@@ -1,13 +1,8 @@
 import type {Post} from '@/lib/type'
-
-const fetchPosts = async (): Promise<Post[]> => {
-  const response = await fetch('http://localhost:3000/exercises/api/posts')
-  const posts = await response.json()
-  return posts as Post[]
-}
+import {getPosts} from '@/db/sgbd'
 
 const Page = async() => {
-  const posts = await fetchPosts()
+  const posts = await getPosts()
     console.log('posts', posts)
     
     return (
