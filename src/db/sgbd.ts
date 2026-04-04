@@ -3,8 +3,8 @@ import {AddTodo, CategoriesEnum, Post, Product, Todo} from '@/lib/type'
 import {JSONFilePreset} from 'lowdb/node'
 import { cacheLife, cacheTag  } from 'next/cache'
 
-const randomError = false
-const slowConnexion = false
+const randomError = true
+const slowConnexion = true
 const serverResponseTime = 2000
 
 type BddDataType = {
@@ -68,8 +68,8 @@ async function initDb() {
 
 export async function getTodos() {
    'use cache'
-  cacheLife('seconds')
-  cacheTag('todos')
+   cacheTag('todos')
+  cacheLife('hours')
   const db = await lowDb()
   const {todos} = db.data
   return todos

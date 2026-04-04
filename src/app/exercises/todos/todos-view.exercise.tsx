@@ -6,7 +6,7 @@ import TodoItem from './todo-item'
 import {toast} from 'sonner'
 import {AddTodo, Todo} from '@/lib/type'
 import React from 'react'
-import {addTodo as AddTodoAction} from './actions'
+import {addTodo as addTodoAction} from './actions'
 
 interface TodosProps {
   todos: Todo[]
@@ -15,13 +15,22 @@ export default function Todos({todos}: TodosProps) {
   const [inputValue, setInputValue] = React.useState('')
 
   const handleClick = async () => {
-    await AddTodoAction({
-      title: inputValue,
-      isCompleted: false,
-      updadtedAt: new Date().toISOString(),
-    } as AddTodo)
-    // 🐶 Affiche un `toast` avec `Sonner`
-    toast('Todo has been created.')
+    try {
+      if (!inputValue) {
+        return toast.error('Please enter a task name')
+        
+      } 
+      await addTodoAction({
+        title: inputValue,
+        isCompleted: false,
+        updadtedAt: new Date().toISOString(),
+      } as AddTodo)
+      // 🐶 Affiche un `toast` avec `Sonner`
+      toast('Todo has been created.')
+    } catch (err) {
+      toast.error('An error has occurred')
+      console.error('Error', err)
+    }
   }
 
   return (

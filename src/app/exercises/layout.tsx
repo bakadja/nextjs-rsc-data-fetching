@@ -4,14 +4,29 @@ import {PropsWithChildren} from 'react'
 
 import {ModeToggle} from '@/components/theme-toggle'
 import {moduleName} from '@/lib/constante'
+import { cacheLife } from 'next/cache'
 
 export const metadata: Metadata = {
   title: 'App',
   description: "Page d'app",
 }
 
+async function CachedYear() {
+  'use cache'
+  cacheLife('default') 
+  return <>{new Date().getFullYear()}</>
+}
+
+async function CachedGeneratedAt() {
+  'use cache'
+  cacheLife('default') 
+  const generatedDate = new Date().toISOString()
+
+  return <p className="animate-color-cycle text-sm">Rendu le {generatedDate}</p>
+}
+
 export default function AppLayout({children}: PropsWithChildren) {
-  const generateDate = new Date().toISOString()
+  //const generateDate = new Date().toISOString()
   return (
     <div className="flex h-screen flex-col">
       <header className="border-b">
@@ -83,10 +98,8 @@ export default function AppLayout({children}: PropsWithChildren) {
       <footer className="border-t">
         <div className="container flex h-14 items-center justify-center px-4 text-center sm:px-6 lg:px-8">
           <div className="mx-auto max-w-4xl">
-            © {new Date().getFullYear()} {moduleName} . All rights reserved.{' '}
-            <p className="animate-color-cycle text-sm">
-              Rendu le {generateDate}
-            </p>
+            © <CachedYear /> {moduleName} . All rights reserved.{' '}
+            <CachedGeneratedAt />
           </div>
         </div>
       </footer>
