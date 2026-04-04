@@ -1,10 +1,21 @@
 import {Checkbox} from '@/components/ui/checkbox'
 import {cn} from '@/lib/utils'
 import {Todo} from '@/lib/type'
+import { updateTodo as updateTodoAction} from './actions.exercise'
+import { toast } from 'sonner'
+
 
 export default function TodoItem({todo}: {todo: Todo}) {
   const handleChange = async (isCompleted: boolean) => {
     console.log('isCompleted', isCompleted)
+    try {
+      await updateTodoAction({...todo, isCompleted})
+
+    } catch(err) {
+      toast.error('An error has occurred')
+      console.error('Error', err)
+    }
+
   }
   return (
     <>

@@ -1,8 +1,8 @@
 // 🐶 Ajoute la directive `use server` pour spécifier que nous faisons des server actions
 'use server'
 import { updateTag  } from 'next/cache'
-import {addTodo as addTodoDao} from '@/db/sgbd'
-import {AddTodo} from '@/lib/type'
+import {addTodo as addTodoDao, updateTodo as updateTodoDao} from '@/db/sgbd'
+import {AddTodo, Todo} from '@/lib/type'
 
 export const addTodo = async (todo: AddTodo) => {
   console.log('add todo action', todo)
@@ -18,6 +18,17 @@ export const addTodo = async (todo: AddTodo) => {
     updateTag ('todos')
   } catch(err) {
     console.error("Error adding todo", err)
+    throw err
+  }
+}
+
+export const updateTodo = async (todo: Todo) => {
+  console.log('update todo action', todo)
+  try {
+    await updateTodoDao(todo)
+    updateTag ('todos')
+  } catch(err) {
+    console.error("Error updating todo", err)
     throw err
   }
 }

@@ -3,7 +3,7 @@ import {AddTodo, CategoriesEnum, Post, Product, Todo} from '@/lib/type'
 import {JSONFilePreset} from 'lowdb/node'
 import { cacheLife, cacheTag  } from 'next/cache'
 
-const randomError = true
+const randomError = false
 const slowConnexion = true
 const serverResponseTime = 2000
 
