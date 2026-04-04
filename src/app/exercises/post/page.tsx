@@ -1,7 +1,10 @@
 import {getPosts} from '@/db/sgbd'
 import {Post} from '@/lib/type'
+import { cacheLife } from 'next/cache'
 
 const Page = async () => {
+  'use cache'
+  cacheLife('default') // Explicit cacheLife prevents the error
   const posts = await getPosts()
 
   console.log('post', posts)
