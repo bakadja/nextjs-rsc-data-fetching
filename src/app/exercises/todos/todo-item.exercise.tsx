@@ -11,9 +11,9 @@ export default function TodoItem({todo}: {todo: Todo}) {
     try {
       await updateTodoAction({...todo, isCompleted})
 
-    } catch(err) {
-      toast.error('An error has occurred')
-      console.error('Error', err)
+    } catch(error) {
+      toast.error(`Failed to update todo.${error}`)
+      console.error('Error', error)
     }
 
   }

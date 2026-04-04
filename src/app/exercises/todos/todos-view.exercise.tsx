@@ -27,9 +27,9 @@ export default function Todos({todos}: TodosProps) {
       } as AddTodo)
       // 🐶 Affiche un `toast` avec `Sonner`
       toast('Todo has been created.')
-    } catch (err) {
-      toast.error('An error has occurred')
-      console.error('Error', err)
+    } catch (error) {
+      toast.error(`Failed to add todo.${error}`)
+      console.error('Error', error)
     }
   }
 
