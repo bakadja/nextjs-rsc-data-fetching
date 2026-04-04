@@ -8,8 +8,9 @@ import { toast } from 'sonner'
 export default function TodoItem({todo}: {todo: Todo}) {
   const handleChange = async (isCompleted: boolean) => {
     console.log('isCompleted', isCompleted)
+    const pattern = '^[A-Z][\\w -]{2,49}$'
     try {
-      await updateTodoAction({...todo, isCompleted})
+      await updateTodoAction({...todo, isCompleted}, pattern)
 
     } catch(error) {
       toast.error(`Failed to update todo.${error}`)
