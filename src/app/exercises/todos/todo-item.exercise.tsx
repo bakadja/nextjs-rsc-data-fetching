@@ -13,7 +13,7 @@ export default function TodoItem({todo}: {todo: Todo}) {
 
     } catch(error) {
       toast.error(`Failed to update todo.${error}`)
-      console.error('Error', error)
+      //console.error('Error', error)
     }
 
   }

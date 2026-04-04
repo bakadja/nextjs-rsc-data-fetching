@@ -29,7 +29,7 @@ export default function Todos({todos}: TodosProps) {
       toast('Todo has been created.')
     } catch (error) {
       toast.error(`Failed to add todo.${error}`)
-      console.error('Error', error)
+      //console.error('Error', error)
     }
   }
 
