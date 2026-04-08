@@ -15,22 +15,25 @@ export default function Todos({todos}: TodosProps) {
   const [inputValue, setInputValue] = React.useState('')
 
   const handleClick = async () => {
-    const pattern = '^[A-Z][\\w -]{2,49}$'
+    const titlePattern = '^[A-Z][\\w -]{2,49}$'
     try {
       if (!inputValue) {
         return toast.error('Please enter a task name')
-        
-      } 
-      await addTodoAction({
-        title: inputValue,
-        isCompleted: false,
-        updadtedAt: new Date().toISOString(),
-      } as AddTodo, pattern)
+      }
+      await addTodoAction(
+        {
+          title: inputValue,
+          isCompleted: false,
+          updadtedAt: new Date().toISOString(),
+        } as AddTodo,
+        titlePattern
+      )
       // 🐶 Affiche un `toast` avec `Sonner`
       toast('Todo has been created.')
     } catch (error) {
-      toast.error(`Failed to add todo.${error}`)
-      //console.error('Error', error)
+      toast.error(
+        `Failed to add todo. ${error instanceof Error && error.message}`
+      )
     }
   }
 
