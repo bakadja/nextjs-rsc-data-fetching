@@ -4,7 +4,7 @@ import {PropsWithChildren} from 'react'
 
 import {ModeToggle} from '@/components/theme-toggle'
 import {moduleName} from '@/lib/constante'
-import { cacheLife } from 'next/cache'
+import { cacheLife} from 'next/cache'
 
 export const metadata: Metadata = {
   title: 'App',
@@ -24,6 +24,7 @@ async function CachedGeneratedAt() {
 
   return <p className="animate-color-cycle text-sm">Rendu le {generatedDate}</p>
 }
+
 
 export default function AppLayout({children}: PropsWithChildren) {
   //const generateDate = new Date().toISOString()
