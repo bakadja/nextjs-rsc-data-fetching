@@ -16,10 +16,12 @@ export default function Todos({todos}: TodosProps) {
 
   const handleClick = async () => {
     const titlePattern = '^[A-Z][\\w -]{2,49}$'
+
+    if (!inputValue) {
+      return toast.error('Please enter a task name')
+    }
+
     try {
-      if (!inputValue) {
-        return toast.error('Please enter a task name')
-      }
       await addTodoAction(
         {
           title: inputValue,
