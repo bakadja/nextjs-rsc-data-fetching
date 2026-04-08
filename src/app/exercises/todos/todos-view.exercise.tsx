@@ -17,7 +17,7 @@ export default function Todos({todos}: TodosProps) {
   const handleClick = async () => {
     const titlePattern = '^[A-Z][\\w -]{2,49}$'
 
-    if (!inputValue) {
+    if (inputValue === '') {
       return toast.error('Please enter a task name')
     }
 
@@ -30,12 +30,10 @@ export default function Todos({todos}: TodosProps) {
         } as AddTodo,
         titlePattern
       )
-      // 🐶 Affiche un `toast` avec `Sonner`
       toast('Todo has been created.')
     } catch (error) {
-      toast.error(
-        `Failed to add todo. ${error instanceof Error && error.message}`
-      )
+      if (error instanceof Error) toast.error(error.message)
+      else toast.error('Failed to add todo. Please try again.')
     }
   }
 
