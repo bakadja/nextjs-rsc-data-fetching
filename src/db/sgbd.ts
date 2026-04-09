@@ -5,7 +5,7 @@ import {JSONFilePreset} from 'lowdb/node'
 
 const randomError = true
 const slowConnexion = true
-const serverResponseTime = 2000
+const serverResponseTime = 500
 
 type BddDataType = {
   posts?: Post[]
