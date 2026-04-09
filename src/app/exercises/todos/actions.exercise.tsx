@@ -5,7 +5,12 @@ import {addTodo as addTodoDao, updateTodo as updateTodoDao} from '@/db/sgbd'
 import {AddTodo, Todo} from '@/lib/type'
 import {ValidationError} from '@/lib/errors'
 
-export const addTodo = async (todo: AddTodo, pattern: string) => {
+type AddTodoResult = {ok: true} | {ok: false; message: string}
+
+export const addTodo = async (
+  todo: AddTodo,
+  pattern: string
+): Promise<AddTodoResult> => {
   console.log('add todo action', todo)
   const regex = new RegExp(pattern)
   try {
@@ -16,33 +21,39 @@ export const addTodo = async (todo: AddTodo, pattern: string) => {
     }
     await addTodoDao(todo)
     updateTag('todos')
+    return {ok: true}
   } catch (err) {
     // debug serveur
     console.error('[addTodo]', err)
     //erreur métier connue → ValidationError
-    if (err instanceof ValidationError) throw err
+    if (err instanceof ValidationError) return {ok: false, message: err.message}
     //erreur technique / inattendue → message générique propre
     throw new Error('Failed to save todo. Please try again.')
   }
 }
 
-export const updateTodo = async (todo: Todo, pattern: string) => {
+export const updateTodo = async (
+  todo: Todo,
+  pattern: string
+): Promise<AddTodoResult> => {
   console.log('update todo action', todo)
 
   const regex = new RegExp(pattern)
 
-  if (!regex.test(todo?.title))
-    throw new Error(
-      'Title must start with a capital letter and be 3 to 50 characters long.'
-    )
   try {
+    if (!regex.test(todo?.title))
+      throw new ValidationError(
+        'Title must start with a capital letter and be 3 to 50 characters long.'
+      )
+
     await updateTodoDao(todo)
     revalidatePath('/exercises/todos')
     updateTag('todos')
+    return {ok: true}
   } catch (err) {
     console.error('Error updating todo [updateTodo ]', err)
     //erreur métier connue → ValidationError
-    if (err instanceof ValidationError) throw err
+    if (err instanceof ValidationError) return {ok: false, message: err.message}
     //erreur technique / inattendue → message générique propre
     throw new Error('Failed to update todo. Please try again.')
   }
