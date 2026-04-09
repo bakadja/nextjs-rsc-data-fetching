@@ -8,7 +8,7 @@ import {Suspense} from 'react'
 async function GetTodos() {
   'use cache'
   cacheTag('todos')
-  cacheLife('seconds')
+  cacheLife('default')
   const todos = await getTodosDao()
 
   return <Todos todos={todos ?? []} />
