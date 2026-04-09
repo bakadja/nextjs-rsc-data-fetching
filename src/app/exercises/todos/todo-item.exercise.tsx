@@ -3,17 +3,19 @@ import {cn} from '@/lib/utils'
 import {Todo} from '@/lib/type'
 import {updateTodo as updateTodoAction} from './actions.exercise'
 import {toast} from 'sonner'
-import {ValidationError} from '@/lib/errors'
 
 export default function TodoItem({todo}: {todo: Todo}) {
   const handleChange = async (isCompleted: boolean) => {
     console.log('isCompleted', isCompleted)
     const titlePattern = '^[A-Z][\\w -]{2,49}$'
     try {
-      await updateTodoAction({...todo, isCompleted}, titlePattern)
-    } catch (error) {
-      if (error instanceof ValidationError) toast.error(`${error.message}`)
-      else toast.error('Failed to update todo. Please try again.')
+      const result = await updateTodoAction(
+        {...todo, isCompleted},
+        titlePattern
+      )
+      if (!result.ok) toast.error(`${result.message}`)
+    } catch {
+      toast.error('Failed to update todo. Please try again.')
     }
   }
   return (
