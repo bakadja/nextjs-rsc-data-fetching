@@ -16,11 +16,14 @@ export default function Todos({todos}: TodosProps) {
   const [inputValue, setInputValue] = React.useState('')
 
   const handleClick = async () => {
-    await AddTodoAction({
-      title: inputValue,
-      isCompleted: false,
-      updadtedAt: new Date().toISOString(),
-    })
+    await AddTodoAction(
+      {
+        title: inputValue,
+        isCompleted: false,
+        updadtedAt: new Date().toISOString(),
+      },
+      ''
+    )
     toast('Todo has been created.')
   }
 

@@ -21,11 +21,14 @@ export default function Todos({todos}: TodosProps) {
       return
     }
     try {
-      await AddTodoAction({
-        title: inputValue,
-        isCompleted: false,
-        updadtedAt: new Date().toISOString(),
-      })
+      await AddTodoAction(
+        {
+          title: inputValue,
+          isCompleted: false,
+          updadtedAt: new Date().toISOString(),
+        },
+        ''
+      )
       toast('Todo has been created.')
     } catch (error) {
       console.error('Error creating todo:', error)
