@@ -7,6 +7,7 @@ import {toast} from 'sonner'
 import {AddTodo, Todo} from '@/lib/type'
 import React from 'react'
 import {addTodo as addTodoAction} from './actions'
+import {ValidationError} from '@/lib/errors'
 
 interface TodosProps {
   todos: Todo[]
@@ -32,7 +33,7 @@ export default function Todos({todos}: TodosProps) {
       )
       toast('Todo has been created.')
     } catch (error) {
-      if (error instanceof Error) toast.error(error.message)
+      if (error instanceof ValidationError) toast.error(error.message)
       else toast.error('Failed to add todo. Please try again.')
     }
   }
