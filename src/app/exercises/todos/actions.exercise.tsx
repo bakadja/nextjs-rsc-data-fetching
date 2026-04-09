@@ -37,6 +37,7 @@ export const updateTodo = async (todo: Todo, pattern: string) => {
     )
   try {
     await updateTodoDao(todo)
+    revalidatePath('/exercises/todos')
     updateTag('todos')
   } catch (err) {
     console.error('Error updating todo [updateTodo ]', err)
@@ -45,7 +46,4 @@ export const updateTodo = async (todo: Todo, pattern: string) => {
     //erreur technique / inattendue → message générique propre
     throw new Error('Failed to update todo. Please try again.')
   }
-  // } finally {
-  //   revalidatePath('/exercises/todos')
-  // }
 }
