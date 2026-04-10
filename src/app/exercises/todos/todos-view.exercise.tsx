@@ -6,7 +6,7 @@ import TodoItem from './todo-item'
 import {toast} from 'sonner'
 import {Todo} from '@/lib/type'
 // 🐶 Importe le hook `useOptimistic`
-import React from 'react'
+import React, {useOptimistic, useTransition} from 'react'
 import {addTodo as AddTodoAction} from './actions'
 
 interface TodosProps {
@@ -15,14 +15,11 @@ interface TodosProps {
 
 export default function Todos({todos}: TodosProps) {
   const [inputValue, setInputValue] = React.useState('')
-
-  // 🐶 Utilise le Hook `useOptimistic` pour avoir
-  // 🤖 const [optimisticTodos, addOptimisticTodo] = ...
-
-  // 🐶 Le 1er paramètre de `useOptimistic` est la liste de `todos`
-  // 🐶 Le 2ème paramètre de `useOptimistic` est une fonction (un reducer)
-  // 🐶 Cette fonction prend 2 paramètres: l'état actuel et la nouvelle `todo`
-  // 🤖 (state, newTodo: Todo) => [...state, newTodo]
+  const [optimisticTodos, setOptimisticTodos] = useOptimistic(
+    todos,
+    (currentTodos, newTodo: Todo) => [...currentTodos, newTodo]
+  )
+  const [isPending, startTransition] = useTransition()
 
   const handleClick = async () => {
     if (inputValue === '') {
@@ -30,21 +27,20 @@ export default function Todos({todos}: TodosProps) {
       return
     }
     const newTodo = {
-      // 🐶 Ajoute `id`, il est necessaire pour le type `Todo`, même si normalement la BDD le gère
-      // 🤖 id: optimisticTodos.length + 1,
+      id: optimisticTodos.length + 1,
       title: inputValue,
       isCompleted: false,
       updadtedAt: new Date().toISOString(),
     }
-    // 🐶 Appelle `addOptimisticTodo` avec la nouvelle `todo` avant d'appeler le server Action
+
     try {
-      await AddTodoAction(newTodo)
-      // 🐶 Déplace le `toast` pour l'avoir directement après `addOptimisticTodo`, on ne veut pas attendre
-      // On veut une interface réactive
+      startTransition(() => setOptimisticTodos(newTodo))
       toast('Todo has been created.')
-    } catch (error) {
-      console.error('Error creating todo:', error)
-      toast.error(`Failed to create todo.${error}`)
+
+      const result = await AddTodoAction(newTodo)
+      if (!result.ok) toast.error(result.message)
+    } catch {
+      toast.error(`Failed to add todo. Please try again.`)
     }
   }
 
@@ -62,11 +58,13 @@ export default function Todos({todos}: TodosProps) {
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
           />
-          <Button onClick={handleClick}>Submit</Button>
+          <Button disabled={isPending} onClick={handleClick}>
+            Submit
+          </Button>
         </div>
         <div className="grid gap-4">
           {/* ⛏️ Supprime `todos` et remplace le par `optimisticTodos`  */}
-          {todos.map((todo) => (
+          {optimisticTodos.map((todo) => (
             <TodoItem key={todo.id} todo={todo} />
           ))}
         </div>
