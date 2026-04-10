@@ -5,7 +5,6 @@ import {Button} from '@/components/ui/button'
 import TodoItem from './todo-item'
 import {toast} from 'sonner'
 import {Todo} from '@/lib/type'
-// 🐶 Importe le hook `useOptimistic`
 import React, {useOptimistic, useTransition} from 'react'
 import {addTodo as AddTodoAction} from './actions'
 
@@ -33,12 +32,14 @@ export default function Todos({todos}: TodosProps) {
       updadtedAt: new Date().toISOString(),
     }
 
-    try {
-      startTransition(() => setOptimisticTodos(newTodo))
-      toast('Todo has been created.')
+    startTransition(async () => {
+      setOptimisticTodos(newTodo)
+    })
 
+    try {
       const result = await AddTodoAction(newTodo)
-      if (!result.ok) toast.error(result.message)
+      if (!result.ok) return toast.error(result.message)
+      toast('Todo has been created.')
     } catch {
       toast.error(`Failed to add todo. Please try again.`)
     }
@@ -63,7 +64,6 @@ export default function Todos({todos}: TodosProps) {
           </Button>
         </div>
         <div className="grid gap-4">
-          {/* ⛏️ Supprime `todos` et remplace le par `optimisticTodos`  */}
           {optimisticTodos.map((todo) => (
             <TodoItem key={todo.id} todo={todo} />
           ))}
