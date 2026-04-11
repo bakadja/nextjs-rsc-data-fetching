@@ -10,20 +10,20 @@ import {
   Select,
 } from '@/components/ui/select'
 
-import {useRef} from 'react'
+import React, {useRef} from 'react'
 import {CategoriesEnum, Product} from '@/lib/type'
-// 🐶 Importe `onSubmitAction` notre action server
-//import {onSubmitAction} from '../actions'
 
-// 🐶 Importe `useActionState`
-//import {useActionState} from 'react'
+import {onSubmitAction} from '../actions'
+
+import {useActionState} from 'react'
 import {Label} from '@/components/ui/label'
+import {toast} from 'sonner'
 
 export default function ProductForm({product}: {product?: Product}) {
-  // 🐶 Utilise le hook `useActionState` pour gérer l'état de notre formulaire
-  // const [state, formAction] = useActionState
-  // 🐶 Passe `onSubmitAction` en premier argument et
-  // {error: false, message: ''} en deuxième argument le state initial
+  const [state, formAction, isPending] = useActionState(onSubmitAction, {
+    error: false,
+    message: '',
+  })
 
   const formRef = useRef<HTMLFormElement>(null)
 
@@ -31,18 +31,28 @@ export default function ProductForm({product}: {product?: Product}) {
   // 🤖 toast.error(state.message) ou toast.success(state.message)
   // 🤖 handleReset() pour réinitialiser le formulaire
 
-  // const handleReset = () => {
-  //   if (formRef.current) {
-  //     formRef.current.reset()
-  //   }
-  // }
+  const handleReset = () => {
+    if (formRef.current) {
+      formRef.current.reset()
+    }
+  }
+
+  React.useEffect(() => {
+    if (state.error) {
+      toast.error(state.message)
+    } else {
+      toast.success(state.message)
+      //handleReset()
+    }
+  }, [state])
+
   const categories = Object.keys(CategoriesEnum).filter((key) =>
     Number.isNaN(Number(key))
   )
 
   return (
     // 🐶 Ajoute le prop `action={formAction}`
-    <form ref={formRef} className="gap-2 space-y-4">
+    <form action={formAction} ref={formRef} className="gap-2 space-y-4">
       <Label>Product title</Label>
       <Input placeholder="ex : Iphone" name="title" />
       <Label>Product title</Label>
@@ -69,7 +79,7 @@ export default function ProductForm({product}: {product?: Product}) {
         <Button size="sm" type="submit">
           Save
         </Button>
-        <Button size="sm" variant="outline">
+        <Button size="sm" variant="outline" disabled={isPending}>
           Cancel
         </Button>
       </div>

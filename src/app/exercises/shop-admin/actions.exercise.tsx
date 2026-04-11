@@ -10,8 +10,11 @@ import {Product} from '@/lib/type'
 import {formSchema} from './schema'
 
 type FormStateSimple = {error: boolean; message: string}
+const formSchemaLight = formSchema.partial({
+  id: true,
+  createdAt: true,
+})
 
-// 🐶 Rappel : Avec `useActionState` l'action server doit avoir 2 paramètres (`state` et `FormData`)
 export async function onSubmitAction(
   prevState: FormStateSimple,
   data: FormData
@@ -19,27 +22,33 @@ export async function onSubmitAction(
   //simulate slow server
   await new Promise((resolve) => setTimeout(resolve, 1000))
   console.log('data', data)
-  // 🐶 Valide les données avec `Zod`
-  // 🤖
-  // const formData = Object.fromEntries(data)
-  // const parsed = formSchema.safeParse(formData)
 
-  // 🐶 Si les données ne sont pas valides (`if (!parsed.success)`), retourne un objet de type `FormStateSimple`
-  // 🤖 Aide toi de `logZodError(data)` pour afficher les erreurs
+  const formData = Object.fromEntries(data)
+  const parsed = formSchemaLight.safeParse(formData)
 
-  // 🐶 Appelle la BDD dans un `try` `catch` avec :
-  // 🤖 await persistProductDao(parsed.data)
+  if (!parsed.success) {
+    // handle error then return
+    const zodErrorMesaage = logZodError(data)
+    return {error: true, message: zodErrorMesaage ?? 'invalid Input'}
+  }
 
-  return {error: false, message: 'Success'}
+  try {
+    await persistProductDao(parsed.data as Product)
+    return {error: false, message: 'Success'}
+  } catch (err) {
+    console.error('onSubmitAction(', err)
+    return {error: true, message: 'Failed to save product.'}
+  }
 }
 
 function logZodError(data: FormData) {
   const formData = Object.fromEntries(data)
-  const parsed = formSchema.safeParse(formData)
+  const parsed = formSchemaLight.safeParse(formData)
   const errorMessages = parsed?.error?.errors
     .map((err) => `${err.path} ${err.message}`)
     .join(', ')
   console.error('Zod errorMessages', errorMessages)
+  return errorMessages
 }
 
 export const getProducts = async () => {
