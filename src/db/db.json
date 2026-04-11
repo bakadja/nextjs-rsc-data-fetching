@@ -19,12 +19,13 @@
     },
     {
       "id": "2",
-      "title": "IPhone",
-      "price": 1490,
-      "quantity": 4,
-      "category": "furniture",
-      "createdAt": "2024-04-25T05:56:06.593Z",
-      "updadtedAt": "2024-05-30T02:54:24.636Z"
+      "title": "jhjjm",
+      "price": 2000,
+      "description": "uizizu",
+      "category": "lighting",
+      "quantity": 20,
+      "createdAt": "2026-04-11T12:45:12.223Z",
+      "updadtedAt": "2026-04-11T12:45:12.223Z"
     }
   ],
   "todos": [
