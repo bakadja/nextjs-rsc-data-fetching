@@ -47,6 +47,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.39.1",
+    "@hookform/devtools": "^4.3.3",
     "@mikecodeur/course-app-cli": "1.0.23",
     "@types/node": "^20.16.10",
     "@types/prismjs": "^1.26.5",
