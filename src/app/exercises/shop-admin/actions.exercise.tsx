@@ -1,6 +1,7 @@
 'use server'
 import {
   deleteProduct as deleteProductDao,
+  getProductByName,
   getProducts as getProductsDao,
   persistProduct as persistProductDao,
 } from '@/db/sgbd'
@@ -29,10 +30,25 @@ export async function onSubmitAction(
   if (hasDoubleSpaces) {
     return {
       success: false,
+      message: 'server error',
       errors: [
         {
           field: 'title',
-          message: 'Custom server error : Title must not contain 2 spaces',
+          message: 'Title must not contain 2 spaces',
+        },
+      ],
+    }
+  }
+
+  const product = await getProductByName(data.get('title')?.toString() ?? '')
+  if (product) {
+    return {
+      success: false,
+      message: 'server error',
+      errors: [
+        {
+          field: 'title',
+          message: 'Product already exists',
         },
       ],
     }
