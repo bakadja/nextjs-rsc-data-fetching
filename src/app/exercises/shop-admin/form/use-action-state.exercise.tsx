@@ -20,19 +20,16 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form'
-import React from 'react'
+import React, {startTransition, useActionState} from 'react'
 import {CategoriesEnum, Product} from '@/lib/type'
 
-//🐶 Remplace cet import par `onSubmitAction`
-import {persistProduct} from '../actions'
+import {onSubmitAction} from '../actions.exercise'
 import {toast} from 'sonner'
 import {FormSchemaType, formSchema} from '../schema'
 
 export default function ProductForm({product}: {product?: Product}) {
-  // 🐶 Utilise le Hook 'useActionState' avec 'onSubmitAction'
-  // et initilise le `state` par défaut
-  // {success:true}
-  // 🤖 const [state, formAction] = useActionState
+  const [state, formAction] = useActionState(onSubmitAction, {success: true})
+
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -56,51 +53,43 @@ export default function ProductForm({product}: {product?: Product}) {
       description: product?.description ?? '',
       price: product?.price ?? 0,
     })
-  }, [form, product]) //
+  }, [form, product])
 
   const categories = Object.keys(CategoriesEnum).filter((key) =>
     Number.isNaN(Number(key))
   )
 
-  async function handleSubmitAction(values: FormSchemaType) {
-    // ⛏️ Supprime tout ce code et remplace le par un appel à `formAction(formData)`
-    const isUpdate = values.id ? true : false
-    try {
-      await persistProduct(values)
-      toast(isUpdate ? 'Product updated' : 'Product added')
-    } catch (error) {
-      console.error(error)
-      toast.error('Error while saving product')
+  async function handleSubmitAction(valuesObj: FormSchemaType) {
+    const formData = new FormData()
+    console.log('values [handleSubmitAction]', valuesObj)
+
+    for (const [name, value] of Object.entries(valuesObj)) {
+      //console.log(typeof name, typeof value)
+      formData.append(name, String(value))
     }
-    // 🐶 Crée une nouvelle instance de `FormData` (le paramètre d'entrée de `formAction`)
-    // 🤖 const formData = new FormData()
-    // 🐶 Ajoute les valeurs de `values` à `formData` en passant par `append`
-    // 📑 https://developer.mozilla.org/en-US/docs/Web/API/FormData/append
-    // 🐶 Appelle `formAction` avec `formData` (pense a wraper dans startTransition(() => formAction(formData)))
+    startTransition(() => formAction(formData))
   }
 
-  // 🐶 Tu vas devoir maintenant gérer les erreurs retournées par le server action
-  // 🐶 Si le `state.success` est vrai, affiche un `toast` `Product saved`
-  // 🐶 Si non, pour chaque erreur dans `state.errors`, utilise `form.setError`
-  // pour afficher les erreurs dans le formulaire
-  // 🐶 Utilise `state.message` pour afficher un `toast` d'erreur
-  // 🐶 Pense à reset le formulaire en cas de succès
   React.useEffect(() => {
-    const success = true // Remplace true par `state.success`
-    if (success) {
-      // 🐶Affiche un `toast` `Product saved`
-      // 🐶Reset le formulaire
+    if (state.success) {
+      toast('Product saved')
+      form.reset({
+        id: '',
+        createdAt: '',
+        quantity: 0,
+        category: CategoriesEnum.default,
+        title: '',
+        description: '',
+        price: 0,
+      })
     } else {
-      // 🐶 Indique à RHF les champs en errors
-      // 🤖
-      // for (const error of state?.errors ?? []) {
-      //   form.setError(error.field, {type: 'manual', message: error.message})
-      // }
-      // 🐶 Affiche un `toast` d'erreur
-      //toast.error(state.message ?? 'Error')
+      for (const error of state?.errors ?? []) {
+        form.setError(error.field, {type: 'manual', message: error.message})
+      }
+
+      toast.error(state.message ?? 'Error')
     }
-    // 🐶 N'oublie pas les dépendances
-  }, [form])
+  }, [form, state])
 
   return (
     <Form {...form}>
