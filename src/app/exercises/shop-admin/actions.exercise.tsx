@@ -25,6 +25,18 @@ export async function onSubmitAction(
   data: FormData
 ): Promise<FormState> {
   await new Promise((resolve) => setTimeout(resolve, 1000))
+  const hasDoubleSpaces = data.get('title')?.toString().includes('  ')
+  if (hasDoubleSpaces) {
+    return {
+      success: false,
+      errors: [
+        {
+          field: 'title',
+          message: 'Custom server error : Title must not contain 2 spaces',
+        },
+      ],
+    }
+  }
   const formData = Object.fromEntries(data)
   console.log('formData [onSubmitAction]', formData)
   const parsed = formSchema.safeParse(formData)
