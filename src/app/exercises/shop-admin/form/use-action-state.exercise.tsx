@@ -28,7 +28,9 @@ import {toast} from 'sonner'
 import {FormSchemaType, formSchema} from '../schema'
 
 export default function ProductForm({product}: {product?: Product}) {
-  const [state, formAction] = useActionState(onSubmitAction, {success: true})
+  const [state, formAction, isPending] = useActionState(onSubmitAction, {
+    success: true,
+  })
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
@@ -187,21 +189,14 @@ export default function ProductForm({product}: {product?: Product}) {
         />
 
         <div className="flex gap-2">
-          <Buttons />
+          <Button size="sm" type="submit" disabled={isPending}>
+            Save
+          </Button>
+          <Button size="sm" variant="outline">
+            Cancel
+          </Button>
         </div>
       </form>
     </Form>
-  )
-}
-const Buttons = () => {
-  return (
-    <>
-      <Button size="sm" type="submit">
-        Save
-      </Button>
-      <Button size="sm" variant="outline">
-        Cancel
-      </Button>
-    </>
   )
 }
